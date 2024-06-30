@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQLite with sql.js</title>
+    <script src="https://cdn.jsdelivr.net/npm/sql.js@1.6.5/dist/sql.js"></script>
+</head>
+<body>
+    <h1>SQLite in Javascript</h1>
+    <button id="queryButton">Query Database</button>
+    <pre id="output"></pre>
+
+    <script>
+        const DB = new SQL.Database();
+        const outputEl = document.getElementById('output');
+
+        document.getElementById('queryButton').addEventListener('click', () => {
+            // Create table (if it doesn't exist)
+            DB.run("CREATE TABLE IF NOT EXISTS my_table (id INTEGER PRIMARY KEY, name TEXT)");
+
+            // Insert some data
+            DB.run("INSERT INTO my_table (name) VALUES (?)", ["Alice"]);
+            DB.run("INSERT INTO my_table (name) VALUES (?)", ["Bob"]);
+
+            // Query the data
+            DB.all("SELECT * FROM my_table").then(data => {
+                let output = "Query Results:\n";
+                for (const row of data) {
+                    output += `ID: ${row.id}, Name: ${row.name}\n`;
+                }
+                outputEl.textContent = output;
+            });
+        });
+    </script>
+</body>
+</html>
